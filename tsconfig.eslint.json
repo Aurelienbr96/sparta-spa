@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["src", "cypress", "vite.config.ts"],
+  "compilerOptions": {
+    "types": ["cypress", "@testing-library/cypress"]
+  }
+}
