@@ -2,6 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { baseQuery } from '@app/modules/common';
 
 import { LoginUserDTO, LoginUserResponseDTO, UserToLoginDTO } from './dto';
+import { RegisterUserResponseDTO } from '../register';
 
 export const loginApi = createApi({
   reducerPath: 'loginApi',
@@ -13,7 +14,10 @@ export const loginApi = createApi({
         url: `/auth/login`,
         body: arg,
       }),
-      transformResponse: (response: LoginUserResponseDTO) => transformLoginResponse(response),
+      transformResponse: (response: LoginUserResponseDTO) => {
+        return response;
+      },
+      extraOptions: {},
     }),
     refreshToken: builder.mutation<LoginUserDTO, void>({
       query: () => ({
@@ -22,25 +26,42 @@ export const loginApi = createApi({
       }),
       transformResponse: (response: LoginUserResponseDTO) => transformLoginResponse(response),
     }),
-    logout: builder.mutation<void, void>({
-      query: () => ({
+    logout: builder.mutation<any, any>({
+      query: (id: number) => ({
         method: 'POST',
         url: '/auth/logout',
+        body: { id },
       }),
+    }),
+    registerGoogle: builder.mutation<any, any>({
+      query: (arg) => ({
+        method: 'POST',
+        url: '/auth/google',
+        body: arg,
+      }),
+      transformResponse: (response: RegisterUserResponseDTO) => {
+        return {
+          id: response.id,
+          email: response.email,
+          role: response.role,
+        };
+      },
+      extraOptions: {
+        transformLoginResponse,
+      },
     }),
   }),
 });
 
-function transformLoginResponse(response: LoginUserResponseDTO): LoginUserDTO {
-  return {
-    id: response.id,
-    email: response.email,
-    username: response.username,
-    firstname: response.firstname,
-    lastname: response.lastname,
-  };
+/* function transformError(e: any) {
+  return e;
+} */
+
+function transformLoginResponse(response: LoginUserResponseDTO): any {
+  return response;
 }
 
 export const { useLogoutMutation } = loginApi;
-export const useLoginMutation = () => loginApi.useLoginMutation({ fixedCacheKey: 'shared-login' });
+export const { useRegisterGoogleMutation } = loginApi;
+export const { useLoginMutation } = loginApi;
 export const useRefreshTokenMutation = () => loginApi.useRefreshTokenMutation({ fixedCacheKey: 'shared-refresh-token' });

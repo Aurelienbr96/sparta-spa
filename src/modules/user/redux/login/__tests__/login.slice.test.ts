@@ -4,7 +4,7 @@ import { generateStore } from '@app/app';
 import { ReplyFnResult } from 'nock/types';
 
 import { loginApi } from '../login.api';
-import { nullUser } from '../../../types';
+import { nullUser } from '@app/modules/user/types';
 
 describe('Login Slice', () => {
   describe('Login API', () => {
@@ -89,7 +89,7 @@ describe('Login Slice', () => {
     it('Should reset state', () => {
       nock().post('/auth/logout').reply(201);
       const store = generateStore({ login: { user: UserFixture.account.user } });
-      store.dispatch(loginApi.endpoints.logout.initiate());
+      store.dispatch(loginApi.endpoints.logout.initiate(1));
 
       expect(store.getState().login).toEqual({
         user: nullUser,

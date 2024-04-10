@@ -1,15 +1,16 @@
-import {
-  ClientGenderComponent,
-  ClientHeightComponent,
-  ClientWeightComponent,
-  OnNext,
-  EndComponent,
-  CoachInfoComponent,
-  StartComponent,
-  AskForClientWorkflow,
-} from '../components/RegisterWorkflowComponents';
+import { OnNext, AthleteOrCoachComponent } from '../components/athlete-or-coach.register';
+import { RegisterForm } from '../components/register.form';
+import { RegisterStateType } from '../pages/register.page';
 
-type ReactTreeComponent = ({ onNext }: { onNext: OnNext }) => JSX.Element;
+type ReactTreeComponent = ({
+  onNext,
+  registerState,
+  setRegisterState,
+}: {
+  onNext: OnNext;
+  registerState: RegisterStateType;
+  setRegisterState: (state: RegisterStateType) => void;
+}) => JSX.Element;
 
 class TreeNode {
   component: ReactTreeComponent;
@@ -28,16 +29,8 @@ class TreeNode {
   }
 }
 
-const clientWorkFlow = new TreeNode(ClientGenderComponent);
-const coachWorkFlow = new TreeNode(CoachInfoComponent);
-const startComponent = new TreeNode(StartComponent);
+const startComponent = new TreeNode(AthleteOrCoachComponent);
 
-clientWorkFlow.addNodes([
-  new TreeNode(ClientHeightComponent, [new TreeNode(ClientWeightComponent, [new TreeNode(EndComponent)])]),
-]);
-
-coachWorkFlow.addNode(new TreeNode(AskForClientWorkflow, [clientWorkFlow, new TreeNode(EndComponent)]));
-
-startComponent.addNodes([clientWorkFlow, coachWorkFlow]);
+startComponent.addNodes([new TreeNode(RegisterForm), new TreeNode(RegisterForm)]);
 
 export const registrationTree = startComponent;

@@ -1,14 +1,16 @@
-import { loginSlice, loginApi, profileApi, registerApi } from '@app/modules/user';
+import { muscleGroupApi } from '@app/modules/common/redux/muscleGroup/muscle-group.api';
+import { registerApi, loginSlice, referalLinksApi, loginApi } from '@app/modules/user';
+
 import { combineReducers } from '@reduxjs/toolkit';
 
-export const reduxApis = [loginApi, profileApi, registerApi];
+export const reduxApis = [loginApi, referalLinksApi, registerApi, muscleGroupApi];
 
 export const rootReducer = combineReducers({
   /* Slice */
   [loginSlice.name]: loginSlice.reducer,
   /* Api */
-
   [loginApi.reducerPath]: loginApi.reducer,
-  [profileApi.reducerPath]: profileApi.reducer,
+  [referalLinksApi.reducerPath]: referalLinksApi.reducer,
   [registerApi.reducerPath]: registerApi.reducer,
+  [muscleGroupApi.reducerPath]: muscleGroupApi.reducer,
 });

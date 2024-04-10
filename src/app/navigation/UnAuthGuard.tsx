@@ -13,7 +13,7 @@ export function UnAuthGuard(props: Props) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (loginSuccess) navigate('/');
+    if (loginSuccess) navigate('/dashboard');
   }, [loginSuccess]);
 
   return loginSuccess ? <LoadingTemplate /> : props.children;

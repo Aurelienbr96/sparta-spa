@@ -1,1 +1,0 @@
-export { AppParameters } from './AppParameters';

@@ -1,12 +1,11 @@
 export type RegisterUserResponseDTO = {
   id: string;
   email: string;
-  username: string;
-  firstname: string;
-  lastname: string;
+  role: string;
 };
 
 export type RegisterUserErrorDTO = {
-  error: string;
+  error: string[];
+  message?: string[];
   conflicts?: string[];
 };

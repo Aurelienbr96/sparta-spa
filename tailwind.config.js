@@ -9,6 +9,18 @@ module.exports = {
       montserrat: ['Montserrat', 'sans-serif'],
     },
     extend: {
+      keyframes: {
+        grow: {
+          '0%, 100%': { transform: 'scale(1.2)' },
+        },
+        reduce: {
+          '0%, 100%': { transform: 'scale(0.8)' },
+        },
+      },
+      animation: {
+        grow: 'grow 2s ease-in-out',
+        reduce: 'reduce 2s ease-in-out',
+      },
       colors: {
         green: {
           light: '#6abea8',

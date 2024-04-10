@@ -1,3 +1,3 @@
-import { UserType } from '../../../types/User';
+import { UserType } from '@app/modules/user';
 
 export type LoginUserDTO = UserType;

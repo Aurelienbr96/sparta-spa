@@ -1,15 +1,16 @@
+import { Role } from '@app/modules/common/constants/role.constants';
+
 export type UserType = {
-  id: string;
   email: string;
-  username: string;
-  firstname: string;
-  lastname: string;
+  googleId?: string;
+  id: string;
+  referalCode?: string;
+  refresh?: string;
+  role: Role | '';
 };
 
 export const nullUser: UserType = {
   id: '',
   email: '',
-  username: '',
-  firstname: '',
-  lastname: '',
+  role: '',
 };

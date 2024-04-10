@@ -17,10 +17,10 @@ jest.mock('./modules/common/utils/env.utils', () => ({
   getEnv: (name: string) => testEnv[name],
 }));
 
-jest.mock('./modules/translation/hooks/useTranslation', () => ({
+/* jest.mock('./modules/translation/hooks/useTranslation', () => ({
   useTranslation: () => {
     return {
       t: (key: string) => key,
     };
   },
-}));
+})); */

@@ -8,7 +8,7 @@ type ExtraOptions = {
   transformError?: (error: FetchBaseQueryError) => string;
 };
 
-export const defaultQuery = fetchBaseQuery({ baseUrl: API_URL });
+export const defaultQuery = fetchBaseQuery({ baseUrl: API_URL, credentials: 'include' });
 
 export const baseQuery: BaseQueryFn<string | FetchArgs, unknown, string> = async (
   args,
@@ -16,14 +16,27 @@ export const baseQuery: BaseQueryFn<string | FetchArgs, unknown, string> = async
   extraOptions: ExtraOptions = {},
 ) => {
   const { transformError } = extraOptions;
+
   try {
     const response = await defaultQuery(args, api, extraOptions);
+
+    if (response?.error && response.error?.status === 401 && api?.endpoint !== 'login') {
+      const refreshResult = await defaultQuery({ url: '/auth/refresh-token', method: 'POST' }, api, extraOptions);
+      if (refreshResult.data) {
+        await baseQuery(args, api, extraOptions);
+      } else {
+        // reset local storage
+      }
+    }
+    // console.log('response', response);
     if (response.error) {
       const error = (response.error as { error?: string }).error;
-      return {
+      const formattedError = {
         ...response,
         error: transformGlobalError(transformError?.(response.error) ?? error ?? ''),
       };
+
+      return formattedError;
     }
     return response;
   } catch (e) {

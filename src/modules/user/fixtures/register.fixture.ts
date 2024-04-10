@@ -1,12 +1,11 @@
+import { Roles } from '@app/modules/common/constants/role.constants';
 import { LoginUserResponseDTO, UserToLoginDTO } from '../redux';
 
 function buildResponse() {
   const successful: LoginUserResponseDTO = {
     id: 'id',
     email: 'user@user.com',
-    username: 'username',
-    firstname: 'firstname',
-    lastname: 'lastname',
+    role: Roles.coach,
   };
 
   return { successful };

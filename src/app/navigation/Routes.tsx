@@ -2,13 +2,14 @@ import { Suspense, lazy } from 'react';
 import { Route, Routes as Switch } from 'react-router-dom';
 import { LoadingTemplate } from '@app/modules/common';
 
-// import { AuthGuard } from './AuthGuard';
+import { AuthGuard } from './AuthGuard';
 import { UnAuthGuard } from './UnAuthGuard';
 import { AuthLayout } from '../components/AuthLayout';
 
 const RegisterRoute = lazy(() => import('@app/modules/user/pages/register.page'));
 const LoginRoute = lazy(() => import('@app/modules/user/pages/login.page'));
 const NotFoundRoute = lazy(() => import('@app/modules/common/templates/not-found.template'));
+const DashboardRoute = lazy(() => import('@app/modules/dashboard/dashboard.page'));
 
 export const Routes = () => (
   <Switch>
@@ -40,6 +41,16 @@ export const Routes = () => (
             <RegisterRoute />
           </Suspense>
         </UnAuthGuard>
+      }
+    />
+    <Route
+      path="/dashboard"
+      element={
+        <AuthGuard>
+          <Suspense fallback={<LoadingTemplate />}>
+            <DashboardRoute />
+          </Suspense>
+        </AuthGuard>
       }
     />
   </Switch>

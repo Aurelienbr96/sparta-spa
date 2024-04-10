@@ -1,6 +1,6 @@
 import type { listenerMiddleware } from '@app/app';
 
-import { loginApi } from '../login';
+import { loginApi } from '../../../user/redux/login';
 
 import { registerApi } from './register.api';
 

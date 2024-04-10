@@ -13,7 +13,7 @@ export function AuthGuard(props: Props) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loginSuccess) navigate('/login');
+    if (!loginSuccess) navigate('/');
   }, [loginSuccess]);
 
   return !loginSuccess ? <LoadingTemplate /> : props.children;
