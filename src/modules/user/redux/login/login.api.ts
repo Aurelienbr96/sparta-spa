@@ -1,30 +1,30 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { baseQuery } from '@app/modules/common';
 
-import { LoginUserDTO, LoginUserResponseDTO, UserToLoginDTO } from './dto';
-import { RegisterUserResponseDTO } from '../register';
+import { LoginUserResponseDTO } from './dto';
+import { UserApiModel } from '../../user.api-model';
 
 export const loginApi = createApi({
   reducerPath: 'loginApi',
   baseQuery,
   endpoints: (builder) => ({
-    login: builder.mutation<LoginUserDTO, UserToLoginDTO>({
+    login: builder.mutation<UserApiModel.Login.Output, UserApiModel.Login.Input>({
       query: (arg) => ({
         method: 'POST',
         url: `/auth/login`,
         body: arg,
       }),
-      transformResponse: (response: LoginUserResponseDTO) => {
+      transformResponse: (response: UserApiModel.Login.Output) => {
         return response;
       },
       extraOptions: {},
     }),
-    refreshToken: builder.mutation<LoginUserDTO, void>({
+    refreshToken: builder.mutation<UserApiModel.RefreshToken.Output, UserApiModel.RefreshToken.Input>({
       query: () => ({
         method: 'POST',
         url: '/auth/refresh-token',
       }),
-      transformResponse: (response: LoginUserResponseDTO) => transformLoginResponse(response),
+      transformResponse: (response: UserApiModel.RefreshToken.Output) => response,
     }),
     logout: builder.mutation<any, any>({
       query: (id: number) => ({
@@ -33,18 +33,14 @@ export const loginApi = createApi({
         body: { id },
       }),
     }),
-    registerGoogle: builder.mutation<any, any>({
+    registerGoogle: builder.mutation<UserApiModel.GoogleOauth.OutPut, UserApiModel.GoogleOauth.Input>({
       query: (arg) => ({
         method: 'POST',
         url: '/auth/google',
         body: arg,
       }),
-      transformResponse: (response: RegisterUserResponseDTO) => {
-        return {
-          id: response.id,
-          email: response.email,
-          role: response.role,
-        };
+      transformResponse: (response: UserApiModel.GoogleOauth.OutPut) => {
+        return response;
       },
       extraOptions: {
         transformLoginResponse,

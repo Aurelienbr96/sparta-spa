@@ -1,28 +1,30 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '../common';
 import { useGetMuscleGroupsQuery } from '../common/redux/muscleGroup/muscle-group.api';
-import { UserType, reset, selectLoginUser, useCreateFeralLinkMutation, useLogoutMutation } from '../user';
+import { reset, selectLoginUser, useCreateFeralLinkMutation, useLogoutMutation } from '../user';
 import { getEnv } from '../common/utils/env.utils';
+import { UserDomainModel } from '@app/modules/user/user.domain-model';
 
-const generateReferalUrl = (user: UserType) => {
-  return `${getEnv('VITE_CLIENT_URL')}?referalCode=${user.referalCode}`;
+const generateReferalUrl = (user: UserDomainModel.User) => {
+  return `${getEnv('VITE_CLIENT_URL')}/referal?referalCode=${user.referalCode}`;
 };
 
 const Dashboard = () => {
   const [logout] = useLogoutMutation();
 
   const dispatch = useDispatch();
-  const response = useGetMuscleGroupsQuery('test');
+  useGetMuscleGroupsQuery();
   const user = useSelector(selectLoginUser);
+  console.log('user', user);
   const [referalMutation] = useCreateFeralLinkMutation();
   const handleLogout = async () => {
     dispatch(reset());
     await logout(user.id);
   };
   const fereralUrl = generateReferalUrl(user);
-  console.log('user', user, response);
+
   const handleCreateReferalLink = () => {
-    referalMutation(user.id);
+    referalMutation();
   };
 
   const handleToggleClipboard = async () => {
@@ -38,7 +40,9 @@ const Dashboard = () => {
     <div>
       <div>
         <p>you are in a protected page</p>
-        <Button onClick={handleLogout}>Logout</Button>
+        <Button data-testid="logout-button" onClick={handleLogout}>
+          Logout
+        </Button>
         {user.role === 'COACH' && (
           <>
             <Button className="mt-6" onClick={handleCreateReferalLink}>

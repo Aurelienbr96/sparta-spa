@@ -11,7 +11,6 @@ export const page = {
     title: 'Register',
     error: {
       email: 'This e-mail is already taken',
-      username: 'This username is already taken',
     },
   },
 };

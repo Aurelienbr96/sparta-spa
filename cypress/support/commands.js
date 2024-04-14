@@ -34,4 +34,14 @@ Cypress.Commands.overwrite('intercept', (originalFn, method, url, response) => {
   if (!CI) originalFn(method, url, response);
 });
 
+Cypress.on('uncaught:exception', (err, runnable) => {
+  // returning false here prevents Cypress from
+  // failing the test
+  return false;
+});
+
+Cypress.Commands.add('resetDatabase', () => {
+  cy.request('POST', `${Cypress.env('apiUrl')}/test-api/reset-database`);
+});
+
 Cypress.Commands.overwrite('log', (originalFn, message) => cy.task('log', message));

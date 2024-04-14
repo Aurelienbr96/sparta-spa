@@ -5,10 +5,10 @@ export const referalLinksApi = createApi({
   reducerPath: 'linkApi',
   baseQuery,
   endpoints: (builder) => ({
-    createFeralLink: builder.mutation<any, string>({
-      query: (id) => ({
+    createFeralLink: builder.mutation<any, void>({
+      query: () => ({
         method: 'PUT',
-        url: `/user/generate-referal-code/${id}`,
+        url: `/user/generate-referal-code`,
       }),
       transformResponse: (response) => {
         console.log('response', response);

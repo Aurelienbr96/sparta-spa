@@ -1,24 +1,26 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { baseQuery, FetchError } from '@app/modules/common';
 
-import { RegisterUserDTO, UserToRegisterDTO, RegisterUserResponseDTO, RegisterUserErrorDTO } from './dto';
-import { Role } from '@app/modules/common/constants/role.constants';
+import { RegisterUserErrorDTO } from './dto';
+import { UserApiModel } from '../../user.api-model';
 
 export const registerApi = createApi({
   reducerPath: 'registerApi',
   baseQuery,
   endpoints: (builder) => ({
-    register: builder.mutation<RegisterUserDTO, UserToRegisterDTO>({
+    register: builder.mutation<UserApiModel.Register.Output, UserApiModel.Register.Input>({
       query: (arg) => ({
         method: 'POST',
         url: '/auth/register',
         body: arg,
       }),
-      transformResponse: (response: RegisterUserResponseDTO) => {
+      transformResponse: (response: UserApiModel.Register.Output) => {
         return {
           id: response.id,
           email: response.email,
-          role: response.role as Role,
+          role: response.role,
+          googleId: response.googleId,
+          referalCode: response.referalCode,
         };
       },
       extraOptions: {

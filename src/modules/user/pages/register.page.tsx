@@ -5,12 +5,12 @@ import { registrationTree } from '../workflow/register.workflow';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@app/modules/common';
 import { useNavigate } from 'react-router';
-import { Role } from '@app/modules/common/constants/role.constants';
+import { Role, Roles } from '@app/modules/common/constants/role.constants';
 
-export type RegisterStateType = Partial<{ role: Role }>;
+export type RegisterStateType = { role: Role };
 
 function RegisterTemplate() {
-  const [registerState, setRegisterState] = useState<RegisterStateType>({});
+  const [registerState, setRegisterState] = useState<RegisterStateType>({ role: Roles.user });
   const { t } = useTranslation();
   const navigate = useNavigate();
   const handleSetRegisterState = (newState: RegisterStateType) => {

@@ -28,12 +28,13 @@ export const baseQuery: BaseQueryFn<string | FetchArgs, unknown, string> = async
         // reset local storage
       }
     }
-    // console.log('response', response);
+
     if (response.error) {
-      const error = (response.error as { error?: string }).error;
+      const error = (response.error as { data?: { message?: string } }).data;
+
       const formattedError = {
         ...response,
-        error: transformGlobalError(transformError?.(response.error) ?? error ?? ''),
+        error: transformGlobalError(transformError?.(response.error) ?? error?.message ?? ''),
       };
 
       return formattedError;

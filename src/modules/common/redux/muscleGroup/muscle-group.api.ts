@@ -11,11 +11,8 @@ export const muscleGroupApi = createApi({
   reducerPath: 'muscleGroupApi',
   baseQuery,
   endpoints: (builder) => ({
-    getMuscleGroups: builder.query({
-      query: () => ({
-        method: 'GET',
-        url: '/muscle-group',
-      }),
+    getMuscleGroups: builder.query<MuscleGroupResponse, void>({
+      query: () => '/muscle-group',
       transformResponse: (response: MuscleGroupResponse) => {
         return response.map((res) => ({
           id: res.id,

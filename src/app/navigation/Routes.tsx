@@ -10,6 +10,7 @@ const RegisterRoute = lazy(() => import('@app/modules/user/pages/register.page')
 const LoginRoute = lazy(() => import('@app/modules/user/pages/login.page'));
 const NotFoundRoute = lazy(() => import('@app/modules/common/templates/not-found.template'));
 const DashboardRoute = lazy(() => import('@app/modules/dashboard/dashboard.page'));
+const ReferalRoute = lazy(() => import('@app/modules/referal/referal.page'));
 
 export const Routes = () => (
   <Switch>
@@ -49,6 +50,17 @@ export const Routes = () => (
         <AuthGuard>
           <Suspense fallback={<LoadingTemplate />}>
             <DashboardRoute />
+          </Suspense>
+        </AuthGuard>
+      }
+    />
+
+    <Route
+      path="/referal"
+      element={
+        <AuthGuard>
+          <Suspense fallback={<LoadingTemplate />}>
+            <ReferalRoute />
           </Suspense>
         </AuthGuard>
       }

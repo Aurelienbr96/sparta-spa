@@ -1,5 +1,5 @@
 // import { Form as FinalForm, Field } from 'react-final-form';
-import { Button, Input } from '@app/modules/common';
+import { Button, ButtonProps, Input } from '@app/modules/common';
 import { Helmet } from 'react-helmet-async';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +8,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { loginValidationSchema } from '../validation/login.validation.schema';
 import { GoogleLogin } from '@react-oauth/google';
 import { useLoginMutation, useRegisterGoogleMutation } from '../redux';
+// import { getEnv } from '@app/modules/common/utils/env.utils';
 
 //import { Alert, Button, Card, Form } from 'react-breeze';
 // import { FormValidationUtils } from '@app/modules/common';
@@ -18,7 +19,7 @@ type FormValues = {
 };
 
 function LoginTemplate() {
-  const [login] = useLoginMutation();
+  const [login, { error }] = useLoginMutation();
 
   const { t } = useTranslation();
   const [signUpByGoogle] = useRegisterGoogleMutation();
@@ -31,8 +32,8 @@ function LoginTemplate() {
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
-      email: 'aurelienbrachet123@gmail.com',
-      password: 'password12345',
+      /* email: getEnv('VITE_ENV') === 'dev' ? 'aurelienbrachet123@gmail.com' : '',
+      password: getEnv('VITE_ENV') === 'dev' ? 'password12345' : '', */
     },
     resolver: yupResolver(loginValidationSchema),
   });
@@ -48,6 +49,7 @@ function LoginTemplate() {
       >
         <p className="text-title-2xl font-bold">{t('app.page.login.title')}</p>
         <Input
+          data-testid="login-page-email"
           label="email"
           required
           register={register}
@@ -58,6 +60,7 @@ function LoginTemplate() {
         />
 
         <Input
+          data-testid="login-page-password"
           label="password"
           required
           errors={errors}
@@ -69,11 +72,24 @@ function LoginTemplate() {
         />
 
         <p className="mt-6">Forgot password ?</p>
-        <LoginButton />
-        <Link to="register">Sign Up</Link>
+        <LoginButton data-testid="login-page-submit" />
+        {!!error && !Array.isArray(error) && (
+          <p data-testid="login-error-message" className="text-red-500">
+            {t(error as string)}
+          </p>
+        )}
+        <Link to="register" data-testid="signup-page-link">
+          Sign Up
+        </Link>
         <GoogleLogin
           onSuccess={(credential) => {
-            signUpByGoogle(credential);
+            signUpByGoogle({
+              googleCredential: {
+                credential: credential.credential as string,
+                clientId: credential.clientId as string,
+                select_by: credential.select_by as string,
+              },
+            });
           }}
           onError={() => {
             console.log('Login Failed');
@@ -85,9 +101,9 @@ function LoginTemplate() {
   );
 }
 
-const LoginButton = () => {
+const LoginButton = (props: Omit<ButtonProps, 'children'>) => {
   return (
-    <Button type="submit" className="w-96 mt-5">
+    <Button type="submit" className="w-96 mt-5" {...props}>
       Sign in with Email
     </Button>
   );

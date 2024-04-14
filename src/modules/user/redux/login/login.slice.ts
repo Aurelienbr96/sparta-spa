@@ -2,16 +2,16 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import { loginApi } from './login.api';
 
-import { nullUser, UserType } from '../../types';
 import { referalLinksApi } from '../profile';
+import { UserDomainModel } from '../../user.domain-model';
 
 type State = {
-  user: UserType;
+  user: UserDomainModel.User;
   isSuccess: boolean;
 };
 
 const initialState: State = {
-  user: nullUser,
+  user: UserDomainModel.nullUser,
   isSuccess: false,
 };
 
