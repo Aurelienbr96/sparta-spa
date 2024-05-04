@@ -5,11 +5,13 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 
 import { Routes } from '../navigation';
 import { persistor, store } from '../redux/store';
+import 'react-toastify/dist/ReactToastify.css';
 
 import '../i18n/config';
 import { getEnv } from '@app/modules/common/utils/env.utils';
 import { PersistGate } from 'redux-persist/integration/react';
 import { useEffect } from 'react';
+import { ToastContainer } from 'react-toastify';
 
 const QueryParser = ({ children }: { children: any }) => {
   const location = useLocation();
@@ -33,6 +35,7 @@ export function App() {
             <Provider store={store}>
               <QueryParser>
                 <Routes />
+                <ToastContainer />
               </QueryParser>
             </Provider>
           </Router>

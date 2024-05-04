@@ -5,7 +5,11 @@ export const page = {
   },
   login: {
     title: 'Login',
-    error: 'Invalid credentials',
+    error: {
+      not_registered: 'No email found for this account, did you sign up ?',
+      invalid_credential: 'Invalid credentials',
+      no_email_found: 'Error fetching email from google',
+    },
   },
   register: {
     title: 'Register',

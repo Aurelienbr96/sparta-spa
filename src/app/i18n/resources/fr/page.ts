@@ -5,7 +5,11 @@ export const page = {
   },
   login: {
     title: 'Connexion',
-    error: 'Indentifiants incorrectes',
+    error: {
+      not_registered: 'Indentifiants incorrect',
+      invalid_credential: "Pas d'email trouvé pour ce compte, êtes vous inscrit ?",
+      no_email_found: 'Une erreur est survenue en essayant de récupérer votre google email',
+    },
   },
   register: {
     title: 'Inscription',

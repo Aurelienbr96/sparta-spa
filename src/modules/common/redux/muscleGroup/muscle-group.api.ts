@@ -1,24 +1,28 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { baseQuery, FetchError } from '@app/modules/common';
-
-type MuscleGroupResponse = Array<{
-  id: string;
-  name: string;
-  description: string;
-}>;
+import { MuscleGroupApiModel } from '@app/modules/muscle-group/muscle.api-model';
 
 export const muscleGroupApi = createApi({
   reducerPath: 'muscleGroupApi',
   baseQuery,
   endpoints: (builder) => ({
-    getMuscleGroups: builder.query<MuscleGroupResponse, void>({
+    getMuscleGroups: builder.query<MuscleGroupApiModel.GetAll.Output, void>({
       query: () => '/muscle-group',
-      transformResponse: (response: MuscleGroupResponse) => {
-        return response.map((res) => ({
-          id: res.id,
-          name: res.name,
-          description: res.description,
-        }));
+      transformResponse: (response: MuscleGroupApiModel.GetAll.Output) => {
+        return response;
+      },
+      extraOptions: {
+        transformError,
+      },
+    }),
+    createMuscleGroup: builder.mutation<MuscleGroupApiModel.Create.Output, MuscleGroupApiModel.Create.Input>({
+      query: (body) => ({
+        method: 'POST',
+        url: `/muscle-group`,
+        body,
+      }),
+      transformResponse: (response: MuscleGroupApiModel.Create.Output) => {
+        return response;
       },
       extraOptions: {
         transformError,
@@ -39,3 +43,4 @@ function transformError(e: FetchError<any>) {
 }
 
 export const { useGetMuscleGroupsQuery } = muscleGroupApi;
+export const { useCreateMuscleGroupMutation } = muscleGroupApi;

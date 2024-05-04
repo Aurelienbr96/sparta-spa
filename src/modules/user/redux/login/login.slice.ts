@@ -43,11 +43,15 @@ export const loginSlice = createSlice({
       };
     });
     /* Refresh Token API */
-    builder.addMatcher(loginApi.endpoints.refreshToken.matchRejected, () => initialState);
-    builder.addMatcher(loginApi.endpoints.refreshToken.matchFulfilled, (_state, action) => ({
-      isSuccess: true,
-      user: action.payload,
-    }));
+    builder.addMatcher(loginApi.endpoints.refreshToken.matchRejected, () => {
+      return initialState;
+    });
+    builder.addMatcher(loginApi.endpoints.refreshToken.matchFulfilled, (_state, action) => {
+      return {
+        isSuccess: true,
+        user: action.payload,
+      };
+    });
     builder.addMatcher(loginApi.endpoints.logout.matchPending, () => initialState);
   },
 });

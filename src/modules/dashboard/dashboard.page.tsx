@@ -1,9 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '../common';
-import { useGetMuscleGroupsQuery } from '../common/redux/muscleGroup/muscle-group.api';
+import { useCreateMuscleGroupMutation, useGetMuscleGroupsQuery } from '../common/redux/muscleGroup/muscle-group.api';
 import { reset, selectLoginUser, useCreateFeralLinkMutation, useLogoutMutation } from '../user';
 import { getEnv } from '../common/utils/env.utils';
 import { UserDomainModel } from '@app/modules/user/user.domain-model';
+import { selectFetchedMuscleGroups } from '../common/redux/muscleGroup/muscle-group.selector';
+import { MuscleGroupApiModel } from '../muscle-group/muscle.api-model';
+import { CreateMuscleGroupForm } from '../muscle-group/form/create-muscle-group.form';
 
 const generateReferalUrl = (user: UserDomainModel.User) => {
   return `${getEnv('VITE_CLIENT_URL')}/referal?referalCode=${user.referalCode}`;
@@ -13,9 +16,14 @@ const Dashboard = () => {
   const [logout] = useLogoutMutation();
 
   const dispatch = useDispatch();
-  useGetMuscleGroupsQuery();
+
+  const { isLoading } = useGetMuscleGroupsQuery();
+  const muscleGroups = useSelector(selectFetchedMuscleGroups);
+  const [createMuscleGroup] = useCreateMuscleGroupMutation();
+  const handleCreateMuscleGroup = (data: MuscleGroupApiModel.Create.Input) => createMuscleGroup(data);
+
   const user = useSelector(selectLoginUser);
-  console.log('user', user);
+
   const [referalMutation] = useCreateFeralLinkMutation();
   const handleLogout = async () => {
     dispatch(reset());
@@ -43,6 +51,9 @@ const Dashboard = () => {
         <Button data-testid="logout-button" onClick={handleLogout}>
           Logout
         </Button>
+        <p>{user.role}</p>
+        <p>{user.email}</p>
+
         {user.role === 'COACH' && (
           <>
             <Button className="mt-6" onClick={handleCreateReferalLink}>
@@ -53,6 +64,12 @@ const Dashboard = () => {
             </p>
           </>
         )}
+        <CreateMuscleGroupForm createMuscleGroup={handleCreateMuscleGroup} />
+        {isLoading
+          ? null
+          : muscleGroups
+          ? muscleGroups.map((musclegroup) => <p key={musclegroup.id}>{musclegroup.name}</p>)
+          : null}
       </div>
     </div>
   );

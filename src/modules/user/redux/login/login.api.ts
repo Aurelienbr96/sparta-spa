@@ -1,7 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { baseQuery } from '@app/modules/common';
 
-import { LoginUserResponseDTO } from './dto';
 import { UserApiModel } from '../../user.api-model';
 
 export const loginApi = createApi({
@@ -24,7 +23,10 @@ export const loginApi = createApi({
         method: 'POST',
         url: '/auth/refresh-token',
       }),
-      transformResponse: (response: UserApiModel.RefreshToken.Output) => response,
+      transformResponse: (response: UserApiModel.RefreshToken.Output) => {
+        console.log('response', response);
+        return response;
+      },
     }),
     logout: builder.mutation<any, any>({
       query: (id: number) => ({
@@ -40,22 +42,12 @@ export const loginApi = createApi({
         body: arg,
       }),
       transformResponse: (response: UserApiModel.GoogleOauth.OutPut) => {
+        console.log('response', response);
         return response;
-      },
-      extraOptions: {
-        transformLoginResponse,
       },
     }),
   }),
 });
-
-/* function transformError(e: any) {
-  return e;
-} */
-
-function transformLoginResponse(response: LoginUserResponseDTO): any {
-  return response;
-}
 
 export const { useLogoutMutation } = loginApi;
 export const { useRegisterGoogleMutation } = loginApi;

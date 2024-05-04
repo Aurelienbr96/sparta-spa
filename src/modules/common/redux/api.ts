@@ -1,8 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-import { BaseQueryFn, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
+import {
+  BaseQueryFn,
+  FetchArgs,
+  fetchBaseQuery,
+  FetchBaseQueryError,
+  FetchBaseQueryMeta,
+} from '@reduxjs/toolkit/dist/query';
 
 import { API_URL } from '../constants';
+import { toast } from 'react-toastify';
+import i18n from '@app/app/i18n/config';
 
 type ExtraOptions = {
   transformError?: (error: FetchBaseQueryError) => string;
@@ -10,7 +18,24 @@ type ExtraOptions = {
 
 export const defaultQuery = fetchBaseQuery({ baseUrl: API_URL, credentials: 'include' });
 
-export const baseQuery: BaseQueryFn<string | FetchArgs, unknown, string> = async (
+const formatError = (
+  response: { error: any; data?: undefined; meta?: FetchBaseQueryMeta | undefined },
+  transformError: ((error: FetchBaseQueryError) => string) | undefined,
+) => {
+  const error = (response.error as { data?: { message?: string; statusCode?: string } }).data;
+
+  const formattedError = {
+    ...response,
+    error: {
+      message: transformGlobalError(transformError?.(response.error) ?? error?.message ?? ''),
+      status: error?.statusCode ?? '',
+    },
+  };
+
+  return formattedError;
+};
+
+export const baseQuery: BaseQueryFn<string | FetchArgs, unknown, { message: string; status: string }> = async (
   args,
   api,
   extraOptions: ExtraOptions = {},
@@ -20,24 +45,8 @@ export const baseQuery: BaseQueryFn<string | FetchArgs, unknown, string> = async
   try {
     const response = await defaultQuery(args, api, extraOptions);
 
-    if (response?.error && response.error?.status === 401 && api?.endpoint !== 'login') {
-      const refreshResult = await defaultQuery({ url: '/auth/refresh-token', method: 'POST' }, api, extraOptions);
-      if (refreshResult.data) {
-        await baseQuery(args, api, extraOptions);
-      } else {
-        // reset local storage
-      }
-    }
-
     if (response.error) {
-      const error = (response.error as { data?: { message?: string } }).data;
-
-      const formattedError = {
-        ...response,
-        error: transformGlobalError(transformError?.(response.error) ?? error?.message ?? ''),
-      };
-
-      return formattedError;
+      return formatError(response, transformError);
     }
     return response;
   } catch (e) {
@@ -47,5 +56,6 @@ export const baseQuery: BaseQueryFn<string | FetchArgs, unknown, string> = async
 
 export function transformGlobalError(message: string): string {
   if (message?.startsWith?.('app')) return message;
+  toast.error(i18n.t('app.error.unknown'));
   return 'app.error.unknown';
 }
