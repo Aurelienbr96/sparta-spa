@@ -12,10 +12,11 @@ i18n
       en,
       fr,
     },
-
     lng: 'en',
     fallbackLng: 'en',
     interpolation: {
       escapeValue: false,
     },
   });
+
+export default i18n;

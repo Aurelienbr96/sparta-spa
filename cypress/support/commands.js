@@ -45,3 +45,22 @@ Cypress.Commands.add('resetDatabase', () => {
 });
 
 Cypress.Commands.overwrite('log', (originalFn, message) => cy.task('log', message));
+
+Cypress.Commands.add('login', (email, password) => {
+  cy.visit('/');
+  cy.get('input[name="email"]').type(email);
+  cy.get('input[name="password"]').type(password);
+  cy.get('form').submit();
+});
+
+Cypress.Commands.add('register', (email, password, role) => {
+  cy.request({
+    method: 'POST',
+    url: `${Cypress.env('apiUrl')}/auth/register`,
+    body: {
+      email: email,
+      password: password,
+      role: role,
+    },
+  });
+});

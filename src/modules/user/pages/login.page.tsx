@@ -1,4 +1,3 @@
-// import { Form as FinalForm, Field } from 'react-final-form';
 import { Button, ButtonProps, Input } from '@app/modules/common';
 import { Helmet } from 'react-helmet-async';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -8,10 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { loginValidationSchema } from '../validation/login.validation.schema';
 import { GoogleLogin } from '@react-oauth/google';
 import { useLoginMutation, useRegisterGoogleMutation } from '../redux';
-// import { getEnv } from '@app/modules/common/utils/env.utils';
-
-//import { Alert, Button, Card, Form } from 'react-breeze';
-// import { FormValidationUtils } from '@app/modules/common';
+import { ErrorMessage } from '@app/modules/common/components/text/ErrorMessage';
 
 type FormValues = {
   email: string;
@@ -22,7 +18,7 @@ function LoginTemplate() {
   const [login, { error }] = useLoginMutation();
 
   const { t } = useTranslation();
-  const [signUpByGoogle] = useRegisterGoogleMutation();
+  const [signUpByGoogle, { error: googleErrors }] = useRegisterGoogleMutation();
 
   const onSubmit: SubmitHandler<FormValues> = (data) => login(data);
 
@@ -31,10 +27,6 @@ function LoginTemplate() {
     handleSubmit,
     formState: { errors },
   } = useForm<FormValues>({
-    defaultValues: {
-      /* email: getEnv('VITE_ENV') === 'dev' ? 'aurelienbrachet123@gmail.com' : '',
-      password: getEnv('VITE_ENV') === 'dev' ? 'password12345' : '', */
-    },
     resolver: yupResolver(loginValidationSchema),
   });
 
@@ -51,6 +43,7 @@ function LoginTemplate() {
         <Input
           data-testid="login-page-email"
           label="email"
+          name="email"
           required
           register={register}
           errors={errors}
@@ -62,6 +55,7 @@ function LoginTemplate() {
         <Input
           data-testid="login-page-password"
           label="password"
+          name="password"
           required
           errors={errors}
           register={register}
@@ -74,10 +68,9 @@ function LoginTemplate() {
         <p className="mt-6">Forgot password ?</p>
         <LoginButton data-testid="login-page-submit" />
         {!!error && !Array.isArray(error) && (
-          <p data-testid="login-error-message" className="text-red-500">
-            {t(error as string)}
-          </p>
+          <ErrorMessage data-testid="login-error-message">{t(error.message as string)}</ErrorMessage>
         )}
+        {googleErrors && <ErrorMessage>{t(googleErrors.message as string)}</ErrorMessage>}
         <Link to="register" data-testid="signup-page-link">
           Sign Up
         </Link>

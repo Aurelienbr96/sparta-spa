@@ -12,7 +12,9 @@
 
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
-
+const { exec } = require('child_process');
+const util = require('util');
+const execPromisify = util.promisify(exec);
 /**
  * @type {Cypress.PluginConfig}
  */
@@ -24,5 +26,48 @@ module.exports = (on, config) => {
       console.log(message);
       return null;
     },
+    resetDatabase() {
+      return execPromisify('yarn run reset', {
+        cwd: '../backend',
+        shell: '/bin/bash', // Adjust as necessary for your environment
+      })
+        .then((result) => {
+          console.log(result.stdout);
+          return null;
+        })
+        .catch((error) => {
+          console.error('exec error:', error);
+          throw new Error(`Reset database failed: ${error}`);
+        });
+    },
+    seedUser() {
+      return execPromisify('yarn run seed:user', {
+        cwd: '../backend',
+        shell: '/bin/bash', // Adjust as necessary for your environment
+      })
+        .then((result) => {
+          console.log(result.stdout);
+          return null;
+        })
+        .catch((error) => {
+          console.error('exec error:', error);
+          throw new Error(`Seeding user failed: ${error}`);
+        });
+    },
+    seed() {
+      return execPromisify('yarn run seed', {
+        cwd: '../backend',
+        shell: '/bin/bash', // Adjust as necessary for your environment
+      })
+        .then((result) => {
+          console.log(result.stdout);
+          return null;
+        })
+        .catch((error) => {
+          console.error('exec error:', error);
+          throw new Error(`Seeding failed: ${error}`);
+        });
+    },
   });
 };
+// NODE_TLS_REJECT_UNAUTHORIZED=0

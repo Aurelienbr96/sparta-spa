@@ -4,10 +4,11 @@ export default defineConfig({
   projectId: '1izaix',
   chromeWebSecurity: false,
   env: {
-    apiUrl: 'http://localhost:3002',
-    VITE_API_URL: 'http://localhost:3002',
+    apiUrl: 'http://localhost:3000',
+    VITE_API_URL: 'http://localhost:3000',
   },
   e2e: {
+    experimentalRunAllSpecs: true,
     // We've imported your old cypress plugins here.
     // You may want to clean this up later by importing these.
     setupNodeEvents(on, config) {
